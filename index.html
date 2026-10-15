@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Práctica de Español: Charla con Mateo</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #fcfbf7;
+        }
+        h1, h2, h3, .font-heading {
+            font-family: 'Poppins', sans-serif;
+        }
+        /* Custom scrollbar styling */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1ebd9;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #d4a373;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #bc8a5f;
+        }
+        /* Typing animation dots */
+        .typing-dot {
+            animation: typing 1.4s infinite ease-in-out both;
+        }
+        .typing-dot:nth-child(1) { animation-delay: 0s; }
+        .typing-dot:nth-child(2) { animation-delay: 0.2s; }
+        .typing-dot:nth-child(3) { animation-delay: 0.4s; }
+        @keyframes typing {
+            0%, 80%, 100% { transform: scale(0.6); opacity: 0.4; }
+            40% { transform: scale(1); opacity: 1; }
+        }
+    </style>
+</head>
+<body class="text-slate-800 h-screen flex flex-col justify-between overflow-hidden">
+
+    <!-- TOP HEADER -->
+    <header class="bg-gradient-to-r from-orange-700 via-amber-700 to-amber-800 text-white shadow-md z-10">
+        <div class="max-w-4xl mx-auto px-4 py-3 flex items-center justify-between">
+            <!-- App Title & Persona Avatar -->
+            <div class="flex items-center space-x-3">
+                <div class="relative">
+                    <div class="w-11 h-11 rounded-full bg-amber-100 border-2 border-amber-300 flex items-center justify-center text-xl shadow-inner font-bold text-orange-800">
+                        👨‍🏫
+                    </div>
+                    <span class="absolute bottom-0 right-0 w-3.5 h-3.5 bg-emerald-500 border-2 border-orange-800 rounded-full" title="Mateo está en línea"></span>
+                </div>
+                <div>
+                    <h1 class="font-heading font-bold text-lg md:text-xl leading-tight">💬 Práctica de Español</h1>
+                    <p class="text-xs text-amber-200">Charla con Mateo &bull; Práctica conversacional pura</p>
+                </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="flex items-center space-x-2">
+                <button id="apiKeyBtn" onclick="toggleModal(true)" class="text-xs md:text-sm bg-orange-800/80 hover:bg-orange-900 text-amber-100 hover:text-white px-3 py-1.5 rounded-lg border border-amber-500/30 transition flex items-center space-x-1 shadow-sm">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 0121 9z"></path></svg>
+                    <span class="hidden sm:inline">Clave API</span>
+                </button>
+                <button onclick="resetConversation()" class="text-xs md:text-sm bg-amber-600/60 hover:bg-amber-600 text-white px-3 py-1.5 rounded-lg transition flex items-center space-x-1 shadow-sm" title="Reiniciar conversación">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
+                    <span class="hidden sm:inline">Reiniciar</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- IMMERSION BANNER (NO SUPPORTS NOTICE) -->
+    <div class="bg-amber-100/80 border-b border-amber-200 text-amber-900 text-xs px-4 py-1.5 text-center font-medium">
+        ✨ <strong>Inmersión total:</strong> Mateo sólo habla español básico. ¡Intenta responder siempre en español!
+    </div>
+
+    <!-- CHAT MESSAGES CONTAINER -->
+    <main id="chatContainer" class="flex-1 overflow-y-auto px-4 py-6 max-w-4xl w-full mx-auto space-y-4">
+        <!-- Messages will be injected here via JavaScript -->
+    </main>
+
+    <!-- TYPING INDICATOR -->
+    <div id="typingIndicator" class="hidden max-w-4xl w-full mx-auto px-4 pb-2">
+        <div class="flex items-center space-x-2 text-slate-500 bg-stone-100 rounded-2xl px-4 py-2.5 w-max border border-stone-200/60 shadow-sm">
+            <span class="text-xs font-medium text-amber-800">Mateo está escribiendo</span>
+            <div class="flex space-x-1 items-center">
+                <span class="w-1.5 h-1.5 bg-amber-600 rounded-full typing-dot"></span>
+                <span class="w-1.5 h-1.5 bg-amber-600 rounded-full typing-dot"></span>
+                <span class="w-1.5 h-1.5 bg-amber-600 rounded-full typing-dot"></span>
+            </div>
+        </div>
+    </div>
+
+    <!-- INPUT CONTAINER -->
+    <footer class="bg-white border-t border-stone-200/80 p-3 md:p-4 shadow-lg z-10">
+        <div class="max-w-4xl mx-auto flex items-center space-x-2">
+            <input 
+                type="text" 
+                id="userInput" 
+                placeholder="Escribe tu mensaje en español aquí..." 
+                class="flex-1 bg-stone-50 border border-stone-300 text-slate-800 rounded-xl px-4 py-3 text-sm md:text-base focus:outline-none focus:ring-2 focus:ring-orange-600 focus:bg-white transition"
+                onkeydown="handleKeyDown(event)"
+                autocomplete="off"
+            />
+            <button 
+                id="sendBtn"
+                onclick="sendMessage()" 
+                class="bg-orange-600 hover:bg-orange-700 text-white p-3 rounded-xl transition shadow-md flex items-center justify-center font-medium focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-1 disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+                <svg class="w-5 h-5 transform rotate-90" fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5-1.429A1 1 0 009 15.571V11a1 1 0 112 0v4.571a1 1 0 00.725.962l5 1.428a1 1 0 001.17-1.408l-7-14z"></path>
+                </svg>
+            </button>
+        </div>
+        <p class="text-[11px] text-center text-slate-400 mt-2">Presiona Enter para enviar. Practica tu vocabulario y gramática diaria.</p>
+    </footer>
+
+    <!-- API KEY MODAL -->
+    <div id="apiModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4 z-50 hidden">
+        <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl border border-stone-200 transform transition-all">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="font-heading font-bold text-lg text-slate-800 flex items-center space-x-2">
+                    <span>🔑</span>
+                    <span>Configurar Clave API</span>
+                </h3>
+                <button onclick="toggleModal(false)" class="text-slate-400 hover:text-slate-600 p-1">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                </button>
+            </div>
+            <p class="text-xs text-slate-600 mb-4 leading-relaxed">
+                Ingresa tu clave de API de Gemini para chatear con Mateo. Tu clave se guarda de forma segura únicamente en tu navegador (localStorage).
+            </p>
+            <div class="mb-4">
+                <label for="apiKeyInput" class="block text-xs font-medium text-slate-700 mb-1">Clave API de Gemini</label>
+                <input 
+                    type="password" 
+                    id="apiKeyInput" 
+                    placeholder="AIzaSy..." 
+                    class="w-full bg-stone-50 border border-stone-300 text-slate-800 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-orange-600"
+                />
+            </div>
+            <div class="flex justify-end space-x-2">
+                <button onclick="toggleModal(false)" class="px-4 py-2 text-xs font-medium text-slate-600 hover:bg-stone-100 rounded-lg transition">Cancelar</button>
+                <button onclick="saveApiKey()" class="px-4 py-2 text-xs font-medium bg-orange-600 hover:bg-orange-700 text-white rounded-lg transition shadow">Guardar Clave</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- TOAST NOTIFICATION CONTAINER -->
+    <div id="toast" class="fixed bottom-20 left-1/2 transform -translate-x-1/2 bg-slate-800 text-white text-xs px-4 py-2.5 rounded-full shadow-lg opacity-0 transition-opacity duration-300 pointer-events-none z-50">
+        <span id="toastMessage"></span>
+    </div>
+
+    <!-- SCRIPT & LOGIC -->
+    <script>
+        // System Persona for Mateo
+        const MATEO_SYSTEM_PROMPT = `You are Mateo, a warm and friendly native Spanish speaker chatting with a novice student through text messages.
+
+STRICT OPERATING RULES:
+1. EXCLUSIVELY SPANISH: You only speak, write, and comprehend Spanish. Never output a single word in English or any other language under any circumstances.
+2. IGNORE / REJECT ENGLISH TEXT: If the student writes in English, pretend you do not understand English at all. Respond strictly in simple Spanish stating that you only speak Spanish (e.g., "Lo siento, no entiendo inglés. ¿Puedes hablarme en español?").
+3. NO SUPPORTS OR TRANSLATIONS: Never provide translations, vocabulary guides, English hints, grammar corrections, or meta-explanations. Remain 100% in character as a casual Spanish speaker at all times.
+4. ACCESSIBLE LANGUAGE FOR NOVICES: The student is a beginner, so use clear, high-frequency vocabulary and simple sentence structures. Avoid complex subjunctive structures or heavy regional slang, but keep the conversation entirely natural.
+5. CONVERSATIONAL DRIVER: Keep the interaction flowing naturally by asking simple, open-ended follow-up questions appropriate for a beginner (e.g., hobbies, family, favorite food, daily routines, weather, sports).
+6. SHORT RESPONSES: Keep your responses relatively short (1-3 simple sentences) to keep it easy for a novice reader.`;
+
+        const INITIAL_GREETING = "¡Hola! Me llamo Mateo. ¿Cómo te llamas y de dónde eres?";
+
+        // State Management
+        let conversationHistory = [];
+        let isGenerating = false;
+
+        // Initialize App on DOM Load
+        document.addEventListener("DOMContentLoaded", () => {
+            loadInitialConversation();
+            checkApiKeyStatus();
+        });
+
+        // Load or initialize conversation
+        function loadInitialConversation() {
+            const saved = localStorage.getItem("mateo_chat_history");
+            if (saved) {
+                try {
+                    conversationHistory = JSON.parse(saved);
+                } catch (e) {
+                    conversationHistory = [];
+                }
+            }
+
+            if (!conversationHistory || conversationHistory.length === 0) {
+                conversationHistory = [
+                    { role: "model", text: INITIAL_GREETING }
+                ];
+                saveChatHistory();
+            }
+
+            renderChat();
+        }
+
+        function saveChatHistory() {
+            localStorage.setItem("mateo_chat_history", JSON.stringify(conversationHistory));
+        }
+
+        // Render all messages into container
+        function renderChat() {
+            const container = document.getElementById("chatContainer");
+            container.innerHTML = "";
+
+            conversationHistory.forEach((msg) => {
+                const isUser = msg.role === "user";
+                const wrapper = document.createElement("div");
+                wrapper.className = `flex w-full ${isUser ? "justify-end" : "justify-start"} mb-1`;
+
+                if (isUser) {
+                    wrapper.innerHTML = `
+                        <div class="max-w-[85%] md:max-w-[70%] bg-orange-600 text-white rounded-2xl rounded-tr-none px-4 py-3 shadow-sm text-sm md:text-base leading-relaxed break-words">
+                            ${escapeHtml(msg.text)}
+                        </div>
+                    `;
+                } else {
+                    wrapper.innerHTML = `
+                        <div class="flex items-start space-x-2 max-w-[85%] md:max-w-[70%]">
+                            <div class="w-8 h-8 rounded-full bg-amber-100 border border-amber-300 flex-shrink-0 flex items-center justify-center text-sm font-bold text-orange-800 shadow-sm mt-1">
+                                👨‍🏫
+                            </div>
+                            <div class="bg-white text-slate-800 border border-stone-200/80 rounded-2xl rounded-tl-none px-4 py-3 shadow-sm text-sm md:text-base leading-relaxed break-words">
+                                ${escapeHtml(msg.text)}
+                            </div>
+                        </div>
+                    `;
+                }
+
+                container.appendChild(wrapper);
+            });
+
+            scrollToBottom();
+        }
+
+        function scrollToBottom() {
+            const container = document.getElementById("chatContainer");
+            container.scrollTop = container.scrollHeight;
+        }
+
+        // User Sends Message
+        async function sendMessage() {
+            const input = document.getElementById("userInput");
+            const text = input.value.trim();
+
+            if (!text || isGenerating) return;
+
+            // Append User Message
+            conversationHistory.push({ role: "user", text: text });
+            input.value = "";
+            renderChat();
+            saveChatHistory();
+
+            // Set loading state
+            setLoading(true);
+
+            // API Key Check
+            const apiKey = getApiKey();
+
+            try {
+                const responseText = await fetchGeminiResponse(conversationHistory, apiKey);
+                conversationHistory.push({ role: "model", text: responseText });
+                saveChatHistory();
+                renderChat();
+            } catch (error) {
+                console.error("Error communicating with Gemini:", error);
+                showToast(error.message || "Error al conectar con Mateo. Revisa tu clave API.");
+            } finally {
+                setLoading(false);
+            }
+        }
+
+        // Gemini API Fetch with Exponential Backoff
+        async function fetchGeminiResponse(history, apiKey) {
+            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=${apiKey}`;
+
+            // Build request payload according to Gemini specification
+            const contentsPayload = history.map(item => ({
+                role: item.role === "user" ? "user" : "model",
+                parts: [{ text: item.text }]
+            }));
+
+            const payload = {
+                contents: contentsPayload,
+                systemInstruction: {
+                    parts: [{ text: MATEO_SYSTEM_PROMPT }]
+                }
+            };
+
+            let retries = 0;
+            const maxRetries = 3;
+            let delay = 1000;
+
+            while (retries <= maxRetries) {
+                try {
+                    const res = await fetch(apiUrl, {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify(payload)
+                    });
+
+                    if (!res.ok) {
+                        const errorData = await res.json().catch(() => ({}));
+                        if (res.status === 400 || res.status === 403) {
+                            throw new Error("Clave API no válida. Por favor configúrala arriba.");
+                        }
+                        if (res.status === 429 && retries < maxRetries) {
+                            // Throttle backoff
+                            await new Promise(resolve => setTimeout(resolve, delay));
+                            delay *= 2;
+                            retries++;
+                            continue;
+                        }
+                        throw new Error(errorData.error?.message || `Error del servidor (${res.status})`);
+                    }
+
+                    const data = await res.json();
+                    const candidate = data.candidates?.[0];
+                    const reply = candidate?.content?.parts?.[0]?.text;
+
+                    if (reply) {
+                        return reply.trim();
+                    } else {
+                        throw new Error("No se recibió respuesta válida.");
+                    }
+                } catch (err) {
+                    if (retries >= maxRetries) {
+                        throw err;
+                    }
+                    await new Promise(resolve => setTimeout(resolve, delay));
+                    delay *= 2;
+                    retries++;
+                }
+            }
+        }
+
+        // Helper Functions
+        function setLoading(loading) {
+            isGenerating = loading;
+            const sendBtn = document.getElementById("sendBtn");
+            const indicator = document.getElementById("typingIndicator");
+
+            sendBtn.disabled = loading;
+            if (loading) {
+                indicator.classList.remove("hidden");
+            } else {
+                indicator.classList.add("hidden");
+            }
+            scrollToBottom();
+        }
+
+        function handleKeyDown(e) {
+            if (e.key === "Enter" && !e.shiftKey) {
+                e.preventDefault();
+                sendMessage();
+            }
+        }
+
+        function resetConversation() {
+            conversationHistory = [
+                { role: "model", text: INITIAL_GREETING }
+            ];
+            saveChatHistory();
+            renderChat();
+            showToast("Conversación reiniciada");
+        }
+
+        // API Key Management
+        function getApiKey() {
+            return localStorage.getItem("gemini_api_key") || "";
+        }
+
+        function saveApiKey() {
+            const keyInput = document.getElementById("apiKeyInput").value.trim();
+            localStorage.setItem("gemini_api_key", keyInput);
+            toggleModal(false);
+            showToast("Clave API guardada correctamente");
+        }
+
+        function checkApiKeyStatus() {
+            const key = getApiKey();
+            if (key) {
+                document.getElementById("apiKeyInput").value = key;
+            }
+        }
+
+        function toggleModal(show) {
+            const modal = document.getElementById("apiModal");
+            if (show) {
+                modal.classList.remove("hidden");
+                document.getElementById("apiKeyInput").focus();
+            } else {
+                modal.classList.add("hidden");
+            }
+        }
+
+        function showToast(msg) {
+            const toast = document.getElementById("toast");
+            const toastMessage = document.getElementById("toastMessage");
+            toastMessage.textContent = msg;
+            toast.classList.remove("opacity-0");
+            toast.classList.add("opacity-100");
+            setTimeout(() => {
+                toast.classList.remove("opacity-100");
+                toast.classList.add("opacity-0");
+            }, 3000);
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement("div");
+            div.textContent = text;
+            return div.innerHTML;
+        }
+    </script>
+</body>
+</html>
